@@ -1,0 +1,15 @@
+queries:
+    user:
+        list:
+            query: |
+                SELECT * FROM users WHERE id = <id:int>;
+        insert:
+            query: |
+                INSERT INTO users (name, lastname, birthday) VALUES (<name:str>, <lastname:str>, <birthday:str>);
+    company:
+        list:
+            query: |
+                SELECT * FROM company WHERE id = <id:int>;
+        insert:
+            query: |
+                INSERT INTO company (name) VALUES (<name:str>);

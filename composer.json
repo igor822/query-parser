@@ -1,0 +1,18 @@
+{
+	"repositories" : [
+		{
+			"type" : "composer",
+			"url" : "https://packages.zendframework.com/"
+		}
+	],
+	"require" : {
+		"zendframework/zend-config" : "2.0.*",
+		"mustangostang/spyc" : "dev-master"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"QueryParser\\" : "lib/"
+		},
+		"classmap" : ["lib/"]
+	}
+}
