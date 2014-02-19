@@ -1,4 +1,17 @@
 {
+	"name" : "igor822/query-parser",
+	"description" : "This project is a different approach to separate your queries search to run into database, when a simple (or comples) ORM is too complicated to run all your queries or simply can't do what you need, you can use QueryParser for put your queries into a YAML file and easily get from source",
+	"type" : "library",
+	"authors" : [
+		{
+			"name" : "Igor Carvalho",
+			"email" : "igor822@gmail.com",
+			"homepage" : "http://igorcarvalho.com",
+			"role" : "Developer"
+		}
+	],
+	"license" : "MIT",
+	"version" : "1.0.0",
 	"repositories" : [
 		{
 			"type" : "composer",
@@ -6,6 +19,7 @@
 		}
 	],
 	"require" : {
+		"php" : ">=5.4.*"
 		"zendframework/zend-config" : "2.0.*",
 		"mustangostang/spyc" : "dev-master"
 	},
