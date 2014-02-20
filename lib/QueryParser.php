@@ -24,7 +24,7 @@ class QueryParser {
 	 */
 	public function __construct($file = '') {
 		$this->_reader = new Reader\Yaml(array('Spyc','YAMLLoadString'));
-		if ($file == '') {
+		if ($file != '') {
 			$this->configure($file);
 		}
 	}
