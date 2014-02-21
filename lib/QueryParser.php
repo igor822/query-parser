@@ -60,7 +60,7 @@ class QueryParser {
 	 * @param {array} $values Array with 'key' to find into query and value to be replaced
 	 * @return {string} $query 
 	 */
-	public function replaceValues($query, $values) {
+	public static function replaceValues($query, $values) {
 		if (preg_match_all('/<(.*):([a-z]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
 			foreach ($matches as $match) {
 				if (array_key_exists($match[1], $values)) {
