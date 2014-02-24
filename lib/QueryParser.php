@@ -55,8 +55,8 @@ class QueryParser {
 	 * Find and replace the field:type into query
 	 * /<(.*):([a-z]+)>/ Get parameters of query
 	 *
-	 * @access public
-	 * @param {string} $query Query to be values replaced
+	 * @access static
+	 * @param {string} $query Query to be replaced
 	 * @param {array} $values Array with 'key' to find into query and value to be replaced
 	 * @return {string} $query 
 	 */
@@ -81,6 +81,13 @@ class QueryParser {
 		else return self::removeConditionalParameter($query);
 	}
 
+	/**
+	 * Find and remove conditional parts of query in case of none parameters has replaced
+	 *
+	 * @access static
+	 * @param {string} $query Query to be formated
+	 * @return {string} $query
+	 */
 	public static function removeConditionals(&$query) {
 		$pattern = '/\[(.*)|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
@@ -89,6 +96,13 @@ class QueryParser {
 		return $query;
 	}
 
+	/**
+	 * Find and remove conditional characters
+	 *
+	 * @access static 
+	 * @param {string} $query Query to be formated
+	 * @return {string} $query
+	 */
 	public static function removeConditionalParameter(&$query) {
 		$pattern = '/\[|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {

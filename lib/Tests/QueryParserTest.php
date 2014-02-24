@@ -41,7 +41,7 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testReplacementValuesInQuery(array $objs = array()) {
 		$query = $objs['parser']->replaceValues($objs['query'], array('login' => 'teste'));
-		var_dump($query);
+		
 		$this->assertNotEmpty($query);
 		$this->assertFalse(strpos($query, '<login:str>'));
 	}
