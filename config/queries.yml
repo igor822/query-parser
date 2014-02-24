@@ -2,13 +2,13 @@ queries:
     user:
         list:
             query: |
-                SELECT * FROM users WHERE id = <id:int>;
+                SELECT * FROM users [WHERE id = <id:int>];
         insert:
             query: |
                 INSERT INTO users (name, lastname, birthday) VALUES (<name:str>, <lastname:str>, <birthday:str>);
         login:
             query: |
-                SELECT * FROM users WHERE id = <login:str>;
+                SELECT * FROM users [WHERE id = <login:str>];
     company:
         list:
             query: |

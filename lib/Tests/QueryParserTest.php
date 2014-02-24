@@ -46,4 +46,14 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 		$this->assertFalse(strpos($query, '<login:str>'));
 	}
 
+	/**
+	 * @depends testGetQuery
+	 */
+	public function testRemoveConditionals(array $objs = array()) {
+		$query = $objs['parser']->replaceValues($objs['query']);
+		
+		$this->assertNotEmpty($query);
+		$this->assertFalse(strpos($query, '['));
+	}
+
 }

@@ -60,8 +60,9 @@ class QueryParser {
 	 * @param {array} $values Array with 'key' to find into query and value to be replaced
 	 * @return {string} $query 
 	 */
-	public static function replaceValues(&$query, $values) {
-		if (preg_match_all('/<(.*):([a-z]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
+	public static function replaceValues(&$query, $values = null) {
+		$replaced = false;
+		if (!empty($values) && preg_match_all('/<(.*):([a-z]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
 			foreach ($matches as $match) {
 				if (array_key_exists($match[1], $values)) {
 					switch ($match[2]) {
@@ -72,8 +73,18 @@ class QueryParser {
 						break;
 					}
 					$query = preg_replace('/<'.$match[1].':([a-z]+)>/', $val, $query);
+					$replaced = true;
 				}
 			}
+		}
+		if (false === $replaced) return self::removeConditionals($query);
+		return $query;
+	}
+
+	public static function removeConditionals(&$query) {
+		$pattern = '/\[(.*)|\]/';
+		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
+			$query = preg_replace($pattern, '', $query);
 		}
 		return $query;
 	}
