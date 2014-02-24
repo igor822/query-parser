@@ -78,11 +78,19 @@ class QueryParser {
 			}
 		}
 		if (false === $replaced) return self::removeConditionals($query);
-		return $query;
+		else return self::removeConditionalParameter($query);
 	}
 
 	public static function removeConditionals(&$query) {
 		$pattern = '/\[(.*)|\]/';
+		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
+			$query = preg_replace($pattern, '', $query);
+		}
+		return $query;
+	}
+
+	public static function removeConditionalParameter(&$query) {
+		$pattern = '/\[|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
 			$query = preg_replace($pattern, '', $query);
 		}
