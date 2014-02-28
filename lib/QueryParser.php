@@ -67,6 +67,7 @@ class QueryParser {
 				if (array_key_exists($match[1], $values)) {
 					switch ($match[2]) {
 						case 'int': $val = $values[$match[1]]; break;
+						case 'like': $val = '\'%'.$values[$match[1]].'%\''; break;
 						case 'str': 
 						default:
 							$val = '\''.$values[$match[1]].'\''; 
