@@ -62,7 +62,7 @@ class QueryParser {
 	 */
 	public static function replaceValues(&$query, $values = null) {
 		$replaced = false;
-		if (!empty($values) && preg_match_all('/<(.*):([a-z]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
+		if (!empty($values) && preg_match_all('/<([a-zA-Z0-9_]+):([a-zA-Z0-9_]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
 			foreach ($matches as $match) {
 				if (array_key_exists($match[1], $values)) {
 					switch ($match[2]) {
@@ -73,7 +73,7 @@ class QueryParser {
 							$val = '\''.$values[$match[1]].'\''; 
 						break;
 					}
-					$query = preg_replace('/<'.$match[1].':([a-z]+)>/', $val, $query);
+					$query = preg_replace('/<'.$match[1].':([a-zA-Z0-9_]+)>/', $val, $query);
 					$replaced = true;
 				}
 			}
