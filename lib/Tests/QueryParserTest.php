@@ -74,4 +74,18 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 
 	}
 
+	public function testGetQueryPathWithPrefix() {
+		$queryParser = new QueryParser($this->file, 'queries');
+
+		$queryWith = $queryParser->findQuery('queries.company.list.query');
+
+		$this->assertNotEmpty($queryWith);
+
+		$queryWithout = $queryParser->findQuery('company.list.query');
+
+		$this->assertNotEmpty($queryWithout);
+
+		$this->assertSame($queryWith, $queryWithout);
+	}
+
 }

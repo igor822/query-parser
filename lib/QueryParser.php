@@ -14,6 +14,8 @@ class QueryParser {
 	private $_data;
 
 	private static $_instance = null;
+
+	private $prefixPath = '';
 	
 	/**
 	 * Constructor of class
@@ -22,11 +24,20 @@ class QueryParser {
 	 * @param {string} $file Path of file
 	 * @return void
 	 */
-	public function __construct($file = '') {
+	public function __construct($file = '', $prefixPath = '') {
+		if ($prefixPath != '') $this->setPrefixPath($prefixPath);
 		$this->_reader = new Reader\Yaml(array('Spyc','YAMLLoadString'));
 		if ($file != '') {
 			$this->configure($file);
 		}
+	}
+
+	public function setPrefixPath($prefixPath) {
+		$this->prefixPath = $prefixPath;
+	}
+
+	public function getPrefixPath() {
+		return $this->prefixPath;
 	}
 
 	/**
@@ -100,7 +111,7 @@ class QueryParser {
 	/**
 	 * Find and remove conditional characters
 	 *
-	 * @access static 
+	 * @access static
 	 * @param {string} $query Query to be formated
 	 * @return {string} $query
 	 */
@@ -122,6 +133,9 @@ class QueryParser {
 	 */
 	public function findQuery($path = '') {
 		if (preg_match('/[^\s]+(\.\w+)/', $path, $matches) !== 0) {
+			if ($this->getPrefixPath() != '' && strpos($this->getPrefixPath(), $path) === false) {
+				$path = $this->getPrefixPath().'.'.$path;
+			} 
 			$parts = explode('.', $path);
 			$data = $this->iterateData($parts, $this->_data);
 			return $data;
