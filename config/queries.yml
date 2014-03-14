@@ -2,17 +2,17 @@ queries:
     user:
         list:
             query: |
-                SELECT * FROM users [WHERE id = <id:int>];
+                SELECT * FROM users [WHERE id = <id:int>]
         insert:
             query: |
-                INSERT INTO users (name, lastname, birthday) VALUES (<name:str>, <lastname:str>, <birthday:str>);
+                INSERT INTO users (name, lastname, birthday) VALUES (<name:str>, <lastname:str>, <birthday:str>)
         login:
             query: |
-                SELECT * FROM users [WHERE id = <login:str>];
+                SELECT * FROM users [WHERE id = <login:str>]
     company:
         list:
             query: |
-                SELECT * FROM company WHERE id = <id:int>;
+                SELECT * FROM company WHERE id = <id:int> [AND id1 = <id1:int>]
         insert:
             query: |
-                INSERT INTO company (name) VALUES (<name:str>);
+                INSERT INTO company (name) VALUES (<name:str>)
