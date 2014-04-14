@@ -87,7 +87,7 @@ class QueryParser {
 					$query = preg_replace('/<'.$match[1].':([a-zA-Z0-9_]+)>/', $val, $query);
 					$replaced = true;
 				} else {
-					self::removeTermConditional($query, $match[1]);
+					self::removeNamedConditional($query, $match[1]);
 				}
 			}
 		}
@@ -110,8 +110,16 @@ class QueryParser {
 		return $query;
 	}
 
-	public static function removeTermConditional(&$query, $term = '') {
-		$pattern = '/'.$term.':\[(.*)|\]/';
+	/**
+	 * Find and remove specific conditionals with name
+	 * 
+	 * @access static
+	 * @param {string} $query Query to be formated
+	 * @param {string} $name Name of conditional
+	 * @return {string} $query
+	 */
+	public static function removeNamedConditional(&$query, $name = '') {
+		$pattern = '/'.$name.':\[(.*)|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
 			$query = preg_replace($pattern, '', $query);
 		}
