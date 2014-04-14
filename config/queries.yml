@@ -12,7 +12,7 @@ queries:
     company:
         list:
             query: |
-                SELECT * FROM company WHERE id = <id:int> [AND id1 = <id1:int>]
+                SELECT * FROM company WHERE id = <id:int> id1:[AND id1 = <id1:int>]
         insert:
             query: |
                 INSERT INTO company (name) VALUES (<name:str>)

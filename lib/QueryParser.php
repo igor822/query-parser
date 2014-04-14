@@ -86,6 +86,8 @@ class QueryParser {
 					}
 					$query = preg_replace('/<'.$match[1].':([a-zA-Z0-9_]+)>/', $val, $query);
 					$replaced = true;
+				} else {
+					self::removeTermConditional($query, $match[1]);
 				}
 			}
 		}
@@ -108,6 +110,14 @@ class QueryParser {
 		return $query;
 	}
 
+	public static function removeTermConditional(&$query, $term = '') {
+		$pattern = '/'.$term.':\[(.*)|\]/';
+		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
+			$query = preg_replace($pattern, '', $query);
+		}
+		return $query;
+	}
+
 	/**
 	 * Find and remove conditional characters
 	 *
@@ -116,6 +126,7 @@ class QueryParser {
 	 * @return {string} $query
 	 */
 	public static function removeConditionalParameter(&$query) {
+		// (aaa:\[[a-zA-Z0-9_\.\s\w\t\<\>\(\)\:\=]+\])
 		$pattern = '/\[|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
 			$query = preg_replace($pattern, '', $query);
