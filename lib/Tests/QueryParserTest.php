@@ -63,14 +63,12 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 		$queryParser = $objs['parser'];
 		
 		$query = $queryParser->findQuery('queries.company.list.query');
-		var_dump($query);
 
 		$values = array(
 			'id' => 1,
 			//'id1' => 2,
 		);
 		$query = $queryParser->replaceValues($query, $values);
-		var_dump($query);
 
 		$this->assertFalse(strpos($query, '['));
 

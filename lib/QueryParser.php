@@ -103,7 +103,7 @@ class QueryParser {
 	 * @return {string} $query
 	 */
 	public static function removeConditionals(&$query) {
-		$pattern = '/\[(.*)|\]/';
+		$pattern = '/(\S+:)?\[(.*)|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
 			$query = preg_replace($pattern, '', $query);
 		}
@@ -135,7 +135,7 @@ class QueryParser {
 	 */
 	public static function removeConditionalParameter(&$query) {
 		// (aaa:\[[a-zA-Z0-9_\.\s\w\t\<\>\(\)\:\=]+\])
-		$pattern = '/\[|\]/';
+		$pattern = '/(\S+:)?\[|\]/';
 		if (preg_match_all($pattern, $query, $matches, PREG_SET_ORDER) !== 0) {
 			$query = preg_replace($pattern, '', $query);
 		}
