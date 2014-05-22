@@ -27,6 +27,7 @@ class QueryParser {
 	 * @return void
 	 */
 	public function __construct($file = '', $options = array()) {
+		$this->_filename = $file;
 		if (!empty($options['prefix'])) $this->setPrefixPath($options['prefix']);
 		if (!empty($options['resource'])) $this->resource = $options['resource'];
 		
@@ -67,7 +68,7 @@ class QueryParser {
 					$this->openFile($f->getPath().DIRECTORY_SEPARATOR.$f->getFilename());
 				}
 			}
-		} else $this->openFile($this->_reader->fromFile($file));
+		} else $this->openFile($file);
 
 		return $this;
 	}

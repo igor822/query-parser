@@ -96,4 +96,12 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($query, 'SELECT * FROM teste');
 	}
 
+	public function testloadOneFile() {
+		$queryParser = new QueryParser($this->file.'/queries.yml');
+		$this->assertNotEmpty($queryParser->getData());
+		$this->assertInternalType('array', $queryParser->getData());
+
+		return $queryParser;
+	}
+
 }
