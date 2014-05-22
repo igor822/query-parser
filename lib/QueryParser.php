@@ -11,7 +11,9 @@ class QueryParser {
 
 	private $_reader;
 
-	private $_data;
+	private $_data = array();
+
+	private $resource;
 
 	private static $_instance = null;
 
@@ -24,8 +26,10 @@ class QueryParser {
 	 * @param {string} $file Path of file
 	 * @return void
 	 */
-	public function __construct($file = '', $prefixPath = '') {
-		if ($prefixPath != '') $this->setPrefixPath($prefixPath);
+	public function __construct($file = '', $options = array()) {
+		if (!empty($options['prefix'])) $this->setPrefixPath($options['prefix']);
+		if (!empty($options['resource'])) $this->resource = $options['resource'];
+		
 		$this->_reader = new Reader\Yaml(array('Spyc','YAMLLoadString'));
 		if ($file != '') {
 			$this->configure($file);
@@ -40,6 +44,10 @@ class QueryParser {
 		return $this->prefixPath;
 	}
 
+	public function openFile($file) {
+		$this->_data = array_merge($this->_data, $this->_reader->fromFile($file));
+	}
+
 	/**
 	 * Convert yaml file to array and store into $_data
 	 *
@@ -48,7 +56,19 @@ class QueryParser {
 	 * @return {object} $this
 	 */
 	public function configure($file) {
-		$this->_data = $this->_reader->fromFile($file);
+		if (is_dir($file)) {
+			foreach (new \DirectoryIterator(realpath($file)) as $f) {
+				if ($f->isDot()) continue;
+				if ($this->resource != '') {
+					if (pathinfo($f->getFilename(), PATHINFO_FILENAME) === $this->resource) 
+						$this->openFile($f->getPath().DIRECTORY_SEPARATOR.$f->getFilename());
+					else continue;
+				} else {
+					$this->openFile($f->getPath().DIRECTORY_SEPARATOR.$f->getFilename());
+				}
+			}
+		} else $this->openFile($this->_reader->fromFile($file));
+
 		return $this;
 	}
 

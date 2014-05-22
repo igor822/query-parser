@@ -15,3 +15,6 @@ $query = $queryParser->replaceValues($query, array('id' => 1));
 
 echo $query;
 ```
+
+
+To test and implement at other projects, you must to add , "zendframework/zend-config": "2.0.*" to require composer

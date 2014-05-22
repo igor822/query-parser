@@ -10,7 +10,7 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 	protected $file;
 
 	protected function setUp() {
-		$this->file = '../../config/queries.yml';
+		$this->file = '../../config/';
 	}
 
 	public function testLoadFile() {
@@ -75,7 +75,7 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetQueryPathWithPrefix() {
-		$queryParser = new QueryParser($this->file, 'queries');
+		$queryParser = new QueryParser($this->file, array('prefix' => 'queries'));
 
 		$queryWith = $queryParser->findQuery('queries.company.list.query');
 
@@ -86,6 +86,14 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNotEmpty($queryWithout);
 
 		$this->assertSame($queryWith, $queryWithout);
+	}
+
+	public function testGetDifferentResource() {
+		$queryParser = new QueryParser($this->file, array('resource' => 'queries2'));
+
+		$this->assertNotEmpty($queryParser->getData());
+		$query = $queryParser->findQuery('teste.subteste');
+		$this->assertEquals($query, 'SELECT * FROM teste');
 	}
 
 }
