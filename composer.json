@@ -20,7 +20,8 @@
 	],
 	"require" : {
 		"php" : ">=5.4.0",
-		"mustangostang/spyc" : "dev-master"
+		"mustangostang/spyc" : "dev-master",
+		"zendframework/zend-config": "2.0.*"
 	},
 	"autoload" : {
 		"psr-0" : {

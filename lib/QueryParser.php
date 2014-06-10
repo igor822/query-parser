@@ -100,6 +100,10 @@ class QueryParser {
 					switch ($match[2]) {
 						case 'int': $val = $values[$match[1]]; break;
 						case 'like': $val = '\'%'.$values[$match[1]].'%\''; break;
+						case 'in_array': 
+							$val = implode(',', $values[$match[1]]);
+							$val = '('.$val.')';
+						break;
 						case 'str': 
 						default:
 							$val = '\''.$values[$match[1]].'\''; 
