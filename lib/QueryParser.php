@@ -28,8 +28,11 @@ class QueryParser {
 	 */
 	public function __construct($file = '', $options = array()) {
 		$this->_filename = $file;
-		if (!empty($options['prefix'])) $this->setPrefixPath($options['prefix']);
-		if (!empty($options['resource'])) $this->resource = $options['resource'];
+		if ( !empty($options['prefix']) ) 
+			$this->setPrefixPath($options['prefix']);
+
+		if ( !empty($options['resource']) ) 
+			$this->resource = $options['resource'];
 		
 		$this->_reader = new Reader\Yaml(array('Spyc','YAMLLoadString'));
 		if ($file != '') {
@@ -57,20 +60,36 @@ class QueryParser {
 	 * @return {object} $this
 	 */
 	public function configure($file) {
-		if (is_dir($file)) {
-			foreach (new \DirectoryIterator(realpath($file)) as $f) {
-				if ($f->isDot()) continue;
-				if ($this->resource != '') {
-					if (pathinfo($f->getFilename(), PATHINFO_FILENAME) === $this->resource) 
-						$this->openFile($f->getPath().DIRECTORY_SEPARATOR.$f->getFilename());
-					else continue;
-				} else {
-					$this->openFile($f->getPath().DIRECTORY_SEPARATOR.$f->getFilename());
-				}
-			}
-		} else $this->openFile($file);
+		if (is_file($file)) {
+			$this->openFile($file);
+			return $this;
+		}
+
+		$resource = '';
+		if ($this->resource == '') 
+			$resource = $this->resource;
+
+		foreach (new \DirectoryIterator(realpath($file)) as $f) {
+			if ($f->isDot()) 
+				continue;
+
+			$filename = $this->setResourceContent($f) 
+							? '' 
+							: $f->getPath().DIRECTORY_SEPARATOR.$f->getFilename();
+			$this->openFile($filename);
+		}
 
 		return $this;
+	}
+
+	private function setResourceContent($f) {
+		if ( $this->resource == '' && 
+			 pathinfo($f->getFilename(), PATHINFO_FILENAME) === $this->resource ) {
+			$this->openFile( $f->getPath().DIRECTORY_SEPARATOR.$f->getFilename() );
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -92,14 +111,22 @@ class QueryParser {
 	 * @param {array} $values Array with 'key' to find into query and value to be replaced
 	 * @return {string} $query 
 	 */
-	public static function replaceValues(&$query, $values = null) {
+	public static function replaceValues($query, $values = null) {
 		$replaced = false;
 		if (!empty($values) && preg_match_all('/<([a-zA-Z0-9_]+):([a-zA-Z0-9_]+)>/', $query, $matches, PREG_SET_ORDER) !== 0) {
 			foreach ($matches as $match) {
-				if (array_key_exists($match[1], $values)) {
+				if (array_key_exists($match[1], $values) && !empty($values[$match[1]])) {
 					switch ($match[2]) {
-						case 'int': $val = $values[$match[1]]; break;
-						case 'like': $val = '\'%'.$values[$match[1]].'%\''; break;
+						case 'int': 
+							$val = $values[$match[1]]; 
+						break;
+						case 'like': 
+							$val = '\'%'.$values[$match[1]].'%\''; 
+						break;
+						case 'in_array': 
+							$val = implode(',', $values[$match[1]]);
+							$val = '('.$val.')';
+						break;
 						case 'str': 
 						default:
 							$val = '\''.$values[$match[1]].'\''; 

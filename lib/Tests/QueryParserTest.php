@@ -104,4 +104,17 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 		return $queryParser;
 	}
 
+	public function testInArrayValue() {
+		$queryParser = new QueryParser($this->file.'/queries.yml');
+		$this->assertNotEmpty($queryParser->getData());
+
+		$queryFinded = $queryParser->findQuery('queries.in_array');
+
+		$query = 'SELECT * FROM teste WHERE ids IN (1,2,3)';
+		$this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => [1, 2, 3]]));
+
+		$query = 'SELECT * FROM teste ';
+		$this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => []]));
+	}
+
 }

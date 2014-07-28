@@ -16,3 +16,5 @@ queries:
         insert:
             query: |
                 INSERT INTO company (name) VALUES (<name:str>)
+    in_array: |
+        SELECT * FROM teste [WHERE ids IN <ids:in_array>]
