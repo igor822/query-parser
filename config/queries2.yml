@@ -1,3 +1,5 @@
 teste:
 	subteste: |
 		SELECT * FROM teste
+	teste_in_array: |
+		SELECT * FROM teste WHERE id IN <ids:in_array>

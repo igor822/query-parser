@@ -115,6 +115,17 @@ class QueryParserTest extends \PHPUnit_Framework_TestCase {
 
 		$query = 'SELECT * FROM teste ';
 		$this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => []]));
+
+
+		$queryParser = new QueryParser($this->file);
+		
+		$query = $queryParser->findQuery('teste.teste_in_array');
+		$values = array(
+			'ids' => array(1, 2, 4, 5, 6)
+		);
+		$query = $queryParser->replaceValues($query, $values);
+
+		return $queryParser;
 	}
 
 }
