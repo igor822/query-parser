@@ -3,8 +3,6 @@ namespace QueryParser;
 
 use Zend\Config\Reader;
 
-//require_once '../vendor/autoload.php';
-
 class QueryParser {
 
 	private $_filename;
@@ -24,7 +22,6 @@ class QueryParser {
 	 * 
 	 * @access public
 	 * @param {string} $file Path of file
-	 * @return void
 	 */
 	public function __construct($file = '', $options = array()) {
 		$this->_filename = $file;
@@ -57,7 +54,7 @@ class QueryParser {
 	 *
 	 * @access public
 	 * @param {string} $file Path of file with all queries
-	 * @return {object} $this
+	 * @return $this
 	 */
 	public function configure($file) {
 		if (is_file($file)) {
@@ -96,7 +93,7 @@ class QueryParser {
 	 * Retrieve all data stored at file
 	 *
 	 * @access public
-	 * @return {array} $_data
+	 * @return array
 	 */
 	public function getData() {
 		return $this->_data;
@@ -109,7 +106,7 @@ class QueryParser {
 	 * @access static
 	 * @param {string} $query Query to be replaced
 	 * @param {array} $values Array with 'key' to find into query and value to be replaced
-	 * @return {string} $query 
+	 * @return string
 	 */
 	public static function replaceValues($query, $values = null) {
 		$replaced = false;
@@ -196,7 +193,7 @@ class QueryParser {
 	 *
 	 * @access public
 	 * @param {string} $path Path of keys into array
-	 * @return {array} $data 
+	 * @return array
 	 */
 	public function findQuery($path = '') {
 		if (preg_match('/[^\s]+(\.\w+)/', $path, $matches) !== 0) {

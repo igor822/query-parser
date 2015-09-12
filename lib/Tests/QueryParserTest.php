@@ -3,14 +3,12 @@ namespace QueryParser\Test;
 
 use QueryParser\QueryParser;
 
-require_once '../../vendor/autoload.php';
-
 class QueryParserTest extends \PHPUnit_Framework_TestCase {
 
 	protected $file;
 
 	protected function setUp() {
-		$this->file = '../../config/';
+		$this->file = __DIR__ . '/../../config/';
 	}
 
 	public function testLoadFile() {
