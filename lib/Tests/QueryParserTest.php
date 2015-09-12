@@ -1,129 +1,132 @@
 <?php
+
 namespace QueryParser\Test;
 
 use QueryParser\QueryParser;
 
-class QueryParserTest extends \PHPUnit_Framework_TestCase {
+class QueryParserTest extends \PHPUnit_Framework_TestCase
+{
+    protected $file;
 
-	protected $file;
+    protected function setUp()
+    {
+        $this->file = __DIR__ . '/../../config/';
+    }
 
-	protected function setUp() {
-		$this->file = __DIR__ . '/../../config/';
-	}
+    public function testLoadFile()
+    {
+        $queryParser = new QueryParser($this->file);
+        $this->assertNotEmpty($queryParser->getData());
+        $this->assertInternalType('array', $queryParser->getData());
 
-	public function testLoadFile() {
-		$queryParser = new QueryParser($this->file);
-		$this->assertNotEmpty($queryParser->getData());
-		$this->assertInternalType('array', $queryParser->getData());
+        return $queryParser;
+    }
 
-		return $queryParser;
-	}
+    /**
+     * @depends testLoadFile
+     */
+    public function testGetQuery(QueryParser $queryParser = null)
+    {
+        $path = 'queries.user.login';
+        $query = $queryParser->findQuery($path);
 
-	/**
-	 * @depends testLoadFile
-	 */
-	public function testGetQuery(QueryParser $queryParser = null) {
-		$path = 'queries.user.login';
-		$query = $queryParser->findQuery($path);
+        $this->assertNotEmpty($query);
+        $this->assertInternalType('array', $query);
+        $this->assertNotEmpty($query['query']);
+        $this->assertInternalType('string', $query['query']);
 
-		$this->assertNotEmpty($query);
-		$this->assertInternalType('array', $query);
-		$this->assertNotEmpty($query['query']);
-		$this->assertInternalType('string', $query['query']);
+        return array('query' => $query['query'], 'parser' => $queryParser);
+    }
 
-		return array('query' => $query['query'], 'parser' => $queryParser);
-	}
+    /**
+     * @depends testGetQuery
+     */
+    public function testReplacementValuesInQuery(array $objs = array())
+    {
+        $query = $objs['parser']->replaceValues($objs['query'], array('login' => 'teste'));
 
-	/**
-	 * @depends testGetQuery
-	 */
-	public function testReplacementValuesInQuery(array $objs = array()) {
-		$query = $objs['parser']->replaceValues($objs['query'], array('login' => 'teste'));
-		
-		$this->assertNotEmpty($query);
-		$this->assertFalse(strpos($query, '<login:str>'));
-	}
+        $this->assertNotEmpty($query);
+        $this->assertFalse(strpos($query, '<login:str>'));
+    }
 
-	/**
-	 * @depends testGetQuery
-	 */
-	public function testRemoveConditionals(array $objs = array()) {
-		$query = $objs['parser']->replaceValues($objs['query']);
-		
-		$this->assertNotEmpty($query);
-		$this->assertFalse(strpos($query, '['));
-	}
+    /**
+     * @depends testGetQuery
+     */
+    public function testRemoveConditionals(array $objs = array())
+    {
+        $query = $objs['parser']->replaceValues($objs['query']);
 
-	/**
-	 * @depends testGetQuery
-	 */
-	public function testRemoveConditionalsOptional(array $objs = array()) {
-		$queryParser = $objs['parser'];
-		
-		$query = $queryParser->findQuery('queries.company.list.query');
+        $this->assertNotEmpty($query);
+        $this->assertFalse(strpos($query, '['));
+    }
 
-		$values = array(
-			'id' => 1,
-			//'id1' => 2,
-		);
-		$query = $queryParser->replaceValues($query, $values);
+    /**
+     * @depends testGetQuery
+     */
+    public function testRemoveConditionalsOptional(array $objs = array())
+    {
+        $queryParser = $objs['parser'];
 
-		$this->assertFalse(strpos($query, '['));
+        $query = $queryParser->findQuery('queries.company.list.query');
 
-	}
+        $values = array('id' => 1,);
+        $query = $queryParser->replaceValues($query, $values);
 
-	public function testGetQueryPathWithPrefix() {
-		$queryParser = new QueryParser($this->file, array('prefix' => 'queries'));
+        $this->assertFalse(strpos($query, '['));
 
-		$queryWith = $queryParser->findQuery('queries.company.list.query');
+    }
 
-		$this->assertNotEmpty($queryWith);
+    public function testGetQueryPathWithPrefix()
+    {
+        $queryParser = new QueryParser($this->file, array('prefix' => 'queries'));
+        $queryWith = $queryParser->findQuery('queries.company.list.query');
+        $this->assertNotEmpty($queryWith);
 
-		$queryWithout = $queryParser->findQuery('company.list.query');
+        $queryWithout = $queryParser->findQuery('company.list.query');
+        $this->assertNotEmpty($queryWithout);
+        $this->assertSame($queryWith, $queryWithout);
+    }
 
-		$this->assertNotEmpty($queryWithout);
+    public function testGetDifferentResource()
+    {
+        $queryParser = new QueryParser($this->file, array('resource' => 'queries2'));
 
-		$this->assertSame($queryWith, $queryWithout);
-	}
+        $this->assertNotEmpty($queryParser->getData());
+        $query = $queryParser->findQuery('teste.subteste');
+        $this->assertEquals($query, 'SELECT * FROM teste');
+    }
 
-	public function testGetDifferentResource() {
-		$queryParser = new QueryParser($this->file, array('resource' => 'queries2'));
+    public function testloadOneFile()
+    {
+        $queryParser = new QueryParser($this->file.'/queries.yml');
+        $this->assertNotEmpty($queryParser->getData());
+        $this->assertInternalType('array', $queryParser->getData());
 
-		$this->assertNotEmpty($queryParser->getData());
-		$query = $queryParser->findQuery('teste.subteste');
-		$this->assertEquals($query, 'SELECT * FROM teste');
-	}
+        return $queryParser;
+    }
 
-	public function testloadOneFile() {
-		$queryParser = new QueryParser($this->file.'/queries.yml');
-		$this->assertNotEmpty($queryParser->getData());
-		$this->assertInternalType('array', $queryParser->getData());
+    public function testInArrayValue()
+    {
+        $queryParser = new QueryParser($this->file.'/queries.yml');
+        $this->assertNotEmpty($queryParser->getData());
 
-		return $queryParser;
-	}
+        $queryFinded = $queryParser->findQuery('queries.in_array');
 
-	public function testInArrayValue() {
-		$queryParser = new QueryParser($this->file.'/queries.yml');
-		$this->assertNotEmpty($queryParser->getData());
+        $query = 'SELECT * FROM teste WHERE ids IN (1,2,3)';
+        $this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => [1, 2, 3]]));
 
-		$queryFinded = $queryParser->findQuery('queries.in_array');
-
-		$query = 'SELECT * FROM teste WHERE ids IN (1,2,3)';
-		$this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => [1, 2, 3]]));
-
-		$query = 'SELECT * FROM teste ';
-		$this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => []]));
+        $query = 'SELECT * FROM teste ';
+        $this->assertEquals($query, $queryParser->replaceValues($queryFinded, ['ids' => []]));
 
 
-		$queryParser = new QueryParser($this->file);
-		
-		$query = $queryParser->findQuery('teste.teste_in_array');
-		$values = array(
-			'ids' => array(1, 2, 4, 5, 6)
-		);
-		$query = $queryParser->replaceValues($query, $values);
+        $queryParser = new QueryParser($this->file);
 
-		return $queryParser;
-	}
+        $query = $queryParser->findQuery('teste.teste_in_array');
+        $values = array(
+            'ids' => array(1, 2, 4, 5, 6)
+        );
+        $query = $queryParser->replaceValues($query, $values);
 
+        return $queryParser;
+    }
 }
